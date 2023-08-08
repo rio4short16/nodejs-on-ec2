@@ -24,7 +24,7 @@ jobs:
                 SSH_PRIVATE_KEY: '${{ secrets.EC2_SSH_KEY }}'
                 REMOTE_HOST: '${{ secrets.HOST_DNS }}'
                 REMOTE_USER: '${{ secrets.USERNAME }}'
-                TARGET: '~/root/node-app'
+                TARGET: 'node-app'
       
             - name: Executing Remote SSH Commands
               uses: appleboy/ssh-action@master
@@ -35,13 +35,15 @@ jobs:
                 username: ${{ secrets.USERNAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
-                  cd ~/root/node-app
+                  cd node-app
                   git pull origin master
                   rm -f .env
                   touch .env
                   echo APP_ENV='${{ secrets.APP_ENV }}' >> .env
                   cat .env
                   export PATH=$PATH:/root/.nvm/versions/node/v20.5.0/bin
+                  sudo npm install -g pm2
+                  sudo npm install -g yarn@latest
                   pm2 list
                   yarn install
                   pm2 restart node-app --update-env
