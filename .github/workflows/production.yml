@@ -1,0 +1,38 @@
+name: NodeJS AWS EC2 Tutorial
+
+on:
+    push:
+        branches:
+            - master
+jobs:
+    deployment:
+        name: Deploy master branch to EC2
+        runs-on: [self-hosted, production]
+        steps:
+            - name: Checkout master branch
+              uses: actions/checkout@v3
+      
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: '20.5.x'
+      
+            - name: SSH and Deploy Node Application
+              uses: appleboy/ssh-action@master
+              env:
+                APP_ENV: ${{ secrets.APP_ENV }}
+              with:
+                host: ${{ secrets.HOST_DNS }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.EC2_SSH_KEY }}
+                port: 22
+                script: |
+                  cd ~/node-on-ec2
+                  git pull origin master
+                  npm install yarn --location=global
+                  rm -f .env
+                  touch .env
+                  echo APP_ENV='${{ secrets.APP_ENV }}' >> .env
+                  cat .env
+                  yarn install
+                  pm2 restart node-app --update-env
