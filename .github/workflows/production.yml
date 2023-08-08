@@ -20,8 +20,6 @@ jobs:
       
             - name: SSH and Deploy Node Application
               uses: appleboy/ssh-action@master
-              env:
-                APP_ENV: ${{ secrets.APP_ENV }}
               with:
                 host: ${{ secrets.HOST_DNS }}
                 username: ${{ secrets.USERNAME }}
