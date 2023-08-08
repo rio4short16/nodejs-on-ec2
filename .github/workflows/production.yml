@@ -33,9 +33,8 @@ jobs:
                 username: ${{ secrets.USERNAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
-                  ll -lt
-                  cd ~/
-                  cd ~/node-app
+                  sudo apt-get -y update
+                  cd home
                   git pull origin master
                   npm install yarn --location=global
                   rm -f .env
