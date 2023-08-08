@@ -35,12 +35,11 @@ jobs:
                 username: ${{ secrets.USERNAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
-                  cd node-app
+                  cd ~/node-app
                   git pull origin master
                   rm -f .env
                   touch .env
                   echo APP_ENV='${{ secrets.APP_ENV }}' >> .env
                   cat .env
-                  pm2 list
-                  yarn install
-                  pm2 restart node-app --update-env
+                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.5.0/bin
+                  npm install
