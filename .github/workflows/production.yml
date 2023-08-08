@@ -26,7 +26,9 @@ jobs:
                 key: ${{ secrets.EC2_SSH_KEY }}
                 port: 22
                 script: |
-                  cd ~/node-on-ec2
+                  ll -lt
+                  cd ~/
+                  cd ~/node-app
                   git pull origin master
                   npm install yarn --location=global
                   rm -f .env
