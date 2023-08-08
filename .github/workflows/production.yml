@@ -17,14 +17,21 @@ jobs:
               uses: actions/setup-node@v3
               with:
                 node-version: '20.5.x'
+            
+            - name: Deploy to Server 1
+              uses: easingthemes/ssh-deploy@main
+              env:
+                SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+                REMOTE_HOST: ${{ secrets.HOST_DNS }}
+                REMOTE_USER: ${{ secrets.USERNAME }}
+                TARGET: 'home'
       
-            - name: SSH and Deploy Node Application
+            - name: Executing remote ssh commands using ssh key
               uses: appleboy/ssh-action@master
               with:
                 host: ${{ secrets.HOST_DNS }}
                 username: ${{ secrets.USERNAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
-                port: 22
                 script: |
                   ll -lt
                   cd ~/
