@@ -17,17 +17,19 @@ jobs:
               uses: actions/setup-node@v3
               with:
                 node-version: '20.5.x'
-            
-            - name: Deploy to Server 1
+
+            - name: Connect to Server
               uses: easingthemes/ssh-deploy@main
-              env:
+              with:
                 SSH_PRIVATE_KEY: '${{ secrets.EC2_SSH_KEY }}'
                 REMOTE_HOST: '${{ secrets.HOST_DNS }}'
                 REMOTE_USER: '${{ secrets.USERNAME }}'
-                TARGET: 'home'
+                TARGET: 'node-app'
       
-            - name: Executing remote ssh commands using ssh key
+            - name: Executing Remote SSH Commands
               uses: appleboy/ssh-action@master
+              env:
+                APP_ENV: '${{ secrets.APP_ENV }}'
               with:
                 host: ${{ secrets.HOST_DNS }}
                 username: ${{ secrets.USERNAME }}
@@ -36,10 +38,10 @@ jobs:
                   sudo apt-get -y update
                   cd home
                   git pull origin master
-                  npm install yarn --location=global
+                  npm install yarn pm2 -g
                   rm -f .env
                   touch .env
                   echo APP_ENV='${{ secrets.APP_ENV }}' >> .env
                   cat .env
                   yarn install
-                  pm2 restart node-app --update-env
+                  pm2 start index.js --name node-app
